@@ -5,9 +5,10 @@ import { findBestMove } from "../../utils/Minimax";
 
 interface BoardProps {
   mode: "1p" | "2p";
+  difficulty?: "easy" | "medium" | "hard";
 }
 
-const Board = ({ mode }: BoardProps) => {
+const Board = ({ mode, difficulty }: BoardProps) => {
   const [squares, setSquares] = useState(Array(9).fill(null));
   const [isXNext, setIsXNext] = useState(true);
 
@@ -25,7 +26,19 @@ const Board = ({ mode }: BoardProps) => {
   useEffect(() => {
     if (mode === "1p" && !isXNext && !winner) {
       const timeout = setTimeout(() => {
-        const bestMove = findBestMove(squares);
+        let bestMove: number | null;
+
+        // AI behavior based on difficulty
+        if (difficulty === "easy") {
+          const available = squares
+            .map((v, i) => (v === null ? i : null))
+            .filter((i) => i !== null) as number[];
+          bestMove = available[Math.floor(Math.random() * available.length)];
+        } else {
+          // medium/hard bisa pakai Minimax
+          bestMove = findBestMove(squares, difficulty); // pasang logic ini
+        }
+
         if (bestMove !== null) {
           const nextSquares = [...squares];
           nextSquares[bestMove] = "O";
@@ -36,7 +49,7 @@ const Board = ({ mode }: BoardProps) => {
 
       return () => clearTimeout(timeout);
     }
-  }, [isXNext, mode, squares, winner]);
+  }, [isXNext, mode, difficulty, squares, winner]);
 
   let status = "Next Player: " + (isXNext ? "X" : "O");
   if (winner) status = "Winner: " + winner;

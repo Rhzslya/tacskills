@@ -1,6 +1,21 @@
 import { calculateWinner } from "../CalculateWinners";
 
-export function findBestMove(squares: (string | null)[]): number | null {
+export function findBestMove(
+  squares: (string | null)[],
+  difficulty: "easy" | "medium" | "hard" = "hard"
+): number | null {
+  if (difficulty === "easy" && Math.random() < 0.8) {
+    return getRandomMove(squares);
+  }
+
+  if (difficulty === "medium" && Math.random() < 0.5) {
+    return getRandomMove(squares);
+  }
+
+  if (difficulty === "hard" && Math.random() < 0.1) {
+    return getRandomMove(squares);
+  }
+
   let bestScore = -Infinity;
   let move: number | null = null;
 
@@ -18,6 +33,14 @@ export function findBestMove(squares: (string | null)[]): number | null {
   }
 
   return move;
+}
+
+function getRandomMove(squares: (string | null)[]): number | null {
+  const available = squares
+    .map((v, i) => (v === null ? i : null))
+    .filter((i) => i !== null) as number[];
+  if (available.length === 0) return null;
+  return available[Math.floor(Math.random() * available.length)];
 }
 
 function minimax(

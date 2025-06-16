@@ -10,7 +10,9 @@ function App() {
   const handleModalOpen = () => setIsModalOpen(true);
   const handleModalClose = () => setIsModalOpen(false);
 
-  const handleSelectMode = (mode: "1p" | "2p") => {
+  const handleSelectMode = (
+    mode: "2p" | "1p-easy" | "1p-medium" | "1p-hard"
+  ) => {
     navigate(`/game?mode=${mode}`);
     handleModalClose();
   };
