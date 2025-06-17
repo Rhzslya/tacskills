@@ -11,9 +11,10 @@ function App() {
   const handleModalClose = () => setIsModalOpen(false);
 
   const handleSelectMode = (
-    mode: "2p" | "1p-easy" | "1p-medium" | "1p-hard"
+    mode: "2p" | "1p-easy" | "1p-medium" | "1p-hard",
+    grid: number
   ) => {
-    navigate(`/game?mode=${mode}`);
+    navigate(`/game?mode=${mode}&grid=${grid}`);
     handleModalClose();
   };
 

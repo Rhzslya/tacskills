@@ -1,66 +1,39 @@
 import { calculateWinner } from "../CalculateWinners";
+import evaluateBoard from "../EvaluateBoard";
 
-export function findBestMove(
-  squares: (string | null)[],
-  difficulty: "easy" | "medium" | "hard" = "hard"
-): number | null {
-  if (difficulty === "easy" && Math.random() < 0.8) {
-    return getRandomMove(squares);
-  }
-
-  if (difficulty === "medium" && Math.random() < 0.5) {
-    return getRandomMove(squares);
-  }
-
-  if (difficulty === "hard" && Math.random() < 0.1) {
-    return getRandomMove(squares);
-  }
-
-  let bestScore = -Infinity;
-  let move: number | null = null;
-
-  for (let i = 0; i < squares.length; i++) {
-    if (!squares[i]) {
-      squares[i] = "O";
-      const score = minimax(squares, 0, false);
-      squares[i] = null;
-
-      if (score > bestScore) {
-        bestScore = score;
-        move = i;
-      }
-    }
-  }
-
-  return move;
-}
-
-function getRandomMove(squares: (string | null)[]): number | null {
-  const available = squares
-    .map((v, i) => (v === null ? i : null))
-    .filter((i) => i !== null) as number[];
-  if (available.length === 0) return null;
-  return available[Math.floor(Math.random() * available.length)];
-}
-
-function minimax(
+export default function minimax(
   board: (string | null)[],
   depth: number,
-  isMaximizing: boolean
+  isMaximizing: boolean,
+  grid: number,
+  maxDepth: number = 4,
+  alpha: number = -Infinity,
+  beta: number = Infinity
 ): number {
-  const winner = calculateWinner(board);
-  if (winner === "O") return 10 - depth;
-  if (winner === "X") return depth - 10;
+  const winner = calculateWinner(board, grid);
+  if (winner === "O") return 1000 - depth;
+  if (winner === "X") return depth - 1000;
   if (board.every((cell) => cell !== null)) return 0;
+  if (depth >= maxDepth) return evaluateBoard(board, grid);
 
   if (isMaximizing) {
     let bestScore = -Infinity;
     for (let i = 0; i < board.length; i++) {
       if (!board[i]) {
         board[i] = "O";
-        const score = minimax(board, depth + 1, false);
+        const score = minimax(
+          board,
+          depth + 1,
+          false,
+          grid,
+          maxDepth,
+          alpha,
+          beta
+        );
         board[i] = null;
         bestScore = Math.max(score, bestScore);
+        alpha = Math.max(alpha, score);
+        if (beta <= alpha) break;
       }
     }
     return bestScore;
@@ -69,9 +42,19 @@ function minimax(
     for (let i = 0; i < board.length; i++) {
       if (!board[i]) {
         board[i] = "X";
-        const score = minimax(board, depth + 1, true);
+        const score = minimax(
+          board,
+          depth + 1,
+          true,
+          grid,
+          maxDepth,
+          alpha,
+          beta
+        );
         board[i] = null;
         bestScore = Math.min(score, bestScore);
+        beta = Math.min(beta, score);
+        if (beta <= alpha) break;
       }
     }
     return bestScore;
