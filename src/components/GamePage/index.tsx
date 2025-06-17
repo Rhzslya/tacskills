@@ -14,6 +14,10 @@ const GamePage = () => {
     "delete" | "convert" | "sweep" | null
   >(null);
 
+  const [playerOUsedDeleteSkill, setPlayerOUsedDeleteSkill] = useState(false);
+  const [playerOUsedConvertSkill, setPlayerOUsedConvertSkill] = useState(false);
+  const [playerOUsedSweepSkill, setPlayerOUsedSweepSkill] = useState(false);
+
   const [playerMode, difficulty] = mode?.split("-") ?? [];
 
   return (
@@ -33,57 +37,16 @@ const GamePage = () => {
         hasUsedConvertSkill={hasUsedConvertSkill}
         hasUsedSweepSkill={hasUsedSweepSkill}
         setHasUsedSweepSkill={setHasUsedSweepSkill}
+        playerOUsedDeleteSkill={playerOUsedDeleteSkill}
+        setPlayerOUsedDeleteSkill={setPlayerOUsedDeleteSkill}
+        playerOUsedConvertSkill={playerOUsedConvertSkill}
+        setPlayerOUsedConvertSkill={setPlayerOUsedConvertSkill}
+        playerOUsedSweepSkill={playerOUsedSweepSkill}
+        setPlayerOUsedSweepSkill={setPlayerOUsedSweepSkill}
         selectedSkill={selectedSkill}
         setSelectedSkill={setSelectedSkill}
+        playerMode={playerMode}
       />
-
-      {playerMode === "1p" && (
-        <div className="flex gap-4 items-center mt-2 z-10">
-          <span className="text-sm font-medium text-[#7F8CAA]">Skills:</span>
-
-          <button
-            disabled={hasUsedDeletedSkill}
-            onClick={() => setSelectedSkill("delete")}
-            className={`text-xs font-semibold px-2 py-1 rounded border transition ${
-              hasUsedDeletedSkill
-                ? "text-gray-400 border-gray-300 cursor-not-allowed"
-                : selectedSkill === "delete"
-                ? "text-white bg-red-500 border-red-600"
-                : "text-red-500 border-red-300"
-            }`}
-          >
-            Delete O {hasUsedDeletedSkill && "(used)"}
-          </button>
-
-          <button
-            disabled={hasUsedConvertSkill}
-            onClick={() => setSelectedSkill("convert")}
-            className={`text-xs font-semibold px-2 py-1 rounded border transition ${
-              hasUsedConvertSkill
-                ? "text-gray-400 border-gray-300 cursor-not-allowed"
-                : selectedSkill === "convert"
-                ? "text-white bg-blue-500 border-blue-600"
-                : "text-blue-500 border-blue-300"
-            }`}
-          >
-            Convert O to X {hasUsedConvertSkill && "(used)"}
-          </button>
-
-          <button
-            disabled={hasUsedSweepSkill}
-            onClick={() => setSelectedSkill("sweep")}
-            className={`text-xs font-semibold px-2 py-1 rounded border transition ${
-              hasUsedSweepSkill
-                ? "text-gray-400 border-gray-300 cursor-not-allowed"
-                : selectedSkill === "sweep"
-                ? "text-white bg-green-500 border-green-600"
-                : "text-green-500 border-green-300"
-            }`}
-          >
-            Sweep Mark {hasUsedSweepSkill && "(used)"}
-          </button>
-        </div>
-      )}
 
       <XOBackgroundIcons total={10} />
     </div>

@@ -3,6 +3,7 @@ import { calculateWinner } from "../../utils/CalculateWinners";
 import Square from "../Square";
 import findBestMove from "../../utils/FindBestMove";
 import findDangerousMove from "../../utils/FindDangerousMove";
+import ButtonSkills from "../ButtonSkills";
 
 interface BoardProps {
   mode: "1p" | "2p";
@@ -14,8 +15,15 @@ interface BoardProps {
   setHasUsedConvertSkill: (value: boolean) => void;
   hasUsedSweepSkill: boolean;
   setHasUsedSweepSkill: (value: boolean) => void;
+  playerOUsedDeleteSkill: boolean;
+  setPlayerOUsedDeleteSkill: (value: boolean) => void;
+  playerOUsedConvertSkill: boolean;
+  setPlayerOUsedConvertSkill: (value: boolean) => void;
+  playerOUsedSweepSkill: boolean;
+  setPlayerOUsedSweepSkill: (value: boolean) => void;
   selectedSkill: "delete" | "convert" | "sweep" | null;
   setSelectedSkill: (value: "delete" | "convert" | "sweep" | null) => void;
+  playerMode: string;
 }
 
 const Board = ({
@@ -28,6 +36,12 @@ const Board = ({
   setHasUsedConvertSkill,
   hasUsedSweepSkill,
   setHasUsedSweepSkill,
+  playerOUsedDeleteSkill,
+  setPlayerOUsedDeleteSkill,
+  playerOUsedConvertSkill,
+  setPlayerOUsedConvertSkill,
+  playerOUsedSweepSkill,
+  setPlayerOUsedSweepSkill,
   selectedSkill,
   setSelectedSkill,
 }: BoardProps) => {
@@ -39,6 +53,7 @@ const Board = ({
   const [sweepTargetEnemyIndex, setSweepTargetEnemyIndex] = useState<
     number | null
   >(null);
+  const playerSymbol = mode === "1p" ? "X" : isXNext ? "X" : "O";
 
   const winner = calculateWinner(squares, grid);
 
@@ -72,36 +87,55 @@ const Board = ({
     const nextSquares = [...squares];
     nextSquares[index] = null;
     setSquares(nextSquares);
-    setHasUsedDeletedSkill(true);
-    setIsXNext(false);
+    if (isXNext) {
+      setHasUsedDeletedSkill(true);
+    } else {
+      setPlayerOUsedDeleteSkill(true);
+    }
+    setIsXNext(!isXNext);
   }
 
   function handleUseConvertSkill(index: number) {
     const nextSquares = [...squares];
-    nextSquares[index] = "X";
+    nextSquares[index] = isXNext ? "X" : "O"; // <- sebelumnya hardcoded "X"
     setSquares(nextSquares);
-    setHasUsedConvertSkill(true);
-    setIsXNext(false);
+    if (isXNext) {
+      setHasUsedConvertSkill(true);
+    } else {
+      setPlayerOUsedConvertSkill(true);
+    }
+    setIsXNext(!isXNext);
   }
 
   function handleSkillClick(index: number): boolean {
-    if (selectedSkill === "sweep" && !hasUsedSweepSkill) {
-      if (squares[index] === "O" && sweepTargetEnemyIndex === null) {
+    const self = isXNext ? "X" : "O";
+    const enemyPlayer = isXNext ? "O" : "X";
+
+    if (
+      selectedSkill === "sweep" &&
+      !(isXNext ? hasUsedSweepSkill : playerOUsedSweepSkill)
+    ) {
+      if (squares[index] === enemyPlayer && sweepTargetEnemyIndex === null) {
         setSweepTargetEnemyIndex(index);
         return true;
       }
-      if (squares[index] === "X" && sweepTargetEnemyIndex !== null) {
+      if (squares[index] === self && sweepTargetEnemyIndex !== null) {
         const nextSquares = [...squares];
         const enemyIndex = sweepTargetEnemyIndex;
         const selfIndex = index;
-        const temp = nextSquares[enemyIndex];
-        nextSquares[enemyIndex] = nextSquares[selfIndex];
-        nextSquares[selfIndex] = temp;
+        [nextSquares[enemyIndex], nextSquares[selfIndex]] = [
+          nextSquares[selfIndex],
+          nextSquares[enemyIndex],
+        ];
         setSquares(nextSquares);
-        setHasUsedSweepSkill(true);
+        if (isXNext) {
+          setHasUsedSweepSkill(true);
+        } else {
+          setPlayerOUsedSweepSkill(true);
+        }
         setSelectedSkill(null);
         setSweepTargetEnemyIndex(null);
-        setIsXNext(false);
+        setIsXNext(!isXNext);
         return true;
       }
       return true;
@@ -109,8 +143,8 @@ const Board = ({
 
     if (
       selectedSkill === "delete" &&
-      !hasUsedDeletedSkill &&
-      squares[index] === "O"
+      !(isXNext ? hasUsedDeletedSkill : playerOUsedDeleteSkill) &&
+      squares[index] === enemyPlayer
     ) {
       handleUseDeleteSkill(index);
       setSelectedSkill(null);
@@ -119,8 +153,8 @@ const Board = ({
 
     if (
       selectedSkill === "convert" &&
-      !hasUsedConvertSkill &&
-      squares[index] === "O"
+      !(isXNext ? hasUsedConvertSkill : playerOUsedConvertSkill) &&
+      squares[index] === enemyPlayer
     ) {
       handleUseConvertSkill(index);
       setSelectedSkill(null);
@@ -214,6 +248,9 @@ const Board = ({
     setBotUsedConvertSkill(false);
     setBotUsedSweepSkill(false);
     setSweepTargetEnemyIndex(null);
+    setPlayerOUsedDeleteSkill(false);
+    setPlayerOUsedConvertSkill(false);
+    setPlayerOUsedSweepSkill(false);
   }
 
   const status = winner
@@ -239,12 +276,32 @@ const Board = ({
             value={value}
             onClick={() => {
               if (mode === "1p" && !isXNext) return;
-              if (mode === "1p" && isXNext && handleSkillClick(i)) return;
+
+              if (handleSkillClick(i)) return;
+
               handleClick(i);
             }}
           />
         ))}
       </div>
+
+      {mode === "1p" || mode === "2p" ? (
+        <ButtonSkills
+          hasUsedDeletedSkill={
+            playerSymbol === "X" ? hasUsedDeletedSkill : playerOUsedDeleteSkill
+          }
+          hasUsedConvertSkill={
+            playerSymbol === "X" ? hasUsedConvertSkill : playerOUsedConvertSkill
+          }
+          hasUsedSweepSkill={
+            playerSymbol === "X" ? hasUsedSweepSkill : playerOUsedSweepSkill
+          }
+          selectedSkill={selectedSkill}
+          setSelectedSkill={setSelectedSkill}
+          playerSymbol={playerSymbol}
+          currentPlayer={isXNext ? "X" : "O"}
+        />
+      ) : null}
 
       <div
         className={`button-play-again mt-6 z-10 group transition-opacity ${
