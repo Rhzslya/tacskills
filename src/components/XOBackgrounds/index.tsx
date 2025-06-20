@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import xImage from "../../assets/x.webp";
 import oImage from "../../assets/o.webp";
+import { motion } from "motion/react";
+import { iconVariants } from "../../lib/framer-motion";
 
 // Fungsi posisi acak
 function getRandomPosition() {
@@ -40,9 +42,17 @@ function generateUniquePosition(existing: { top: string; left: string }[]): {
   return getRandomPosition();
 }
 
-// Fungsi ukuran acak (20px s.d. 40px)
-function getRandomSizeStyle() {
-  const sizes = [20, 24, 28, 32, 36, 40];
+function getRandomSizeStyle(breakpoint: "sm" | "md" | "lg") {
+  let sizes: number[];
+
+  if (breakpoint === "lg") {
+    sizes = [24, 28, 32, 36, 40];
+  } else if (breakpoint === "md") {
+    sizes = [20, 24, 28, 32, 36];
+  } else {
+    sizes = [16, 20, 24, 28, 32];
+  }
+
   const size = sizes[Math.floor(Math.random() * sizes.length)];
   return {
     width: `${size}px`,
@@ -54,45 +64,91 @@ interface XOBackgroundIconsProps {
   total?: number;
 }
 
+type IconData = {
+  type: "X" | "O";
+  top: string;
+  left: string;
+};
+
+const STORAGE_KEY = "xo-background-icons";
+
 const XOBackgroundIcons: React.FC<XOBackgroundIconsProps> = ({
   total = 10,
 }) => {
-  const usedPositions: { top: string; left: string }[] = [];
+  const [icons, setIcons] = useState<IconData[]>([]);
+  const [breakpoint, setBreakpoint] = useState<"sm" | "md" | "lg">("lg");
 
-  const xIcons = Array.from({ length: total }, (_, i) => {
-    const pos = generateUniquePosition(usedPositions);
-    usedPositions.push(pos);
-    const sizeStyle = getRandomSizeStyle();
-    return (
-      <img
-        key={`x-${i}`}
-        src={xImage}
-        alt="X"
-        className="absolute opacity-30 pointer-events-none z-0 object-contain"
-        style={{ ...pos, ...sizeStyle }}
-      />
-    );
-  });
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width >= 1024) setBreakpoint("lg");
+      else if (width >= 768) setBreakpoint("md");
+      else setBreakpoint("sm");
+    };
 
-  const oIcons = Array.from({ length: total }, (_, i) => {
-    const pos = generateUniquePosition(usedPositions);
-    usedPositions.push(pos);
-    const sizeStyle = getRandomSizeStyle();
-    return (
-      <img
-        key={`o-${i}`}
-        src={oImage}
-        alt="O"
-        className="absolute opacity-30 pointer-events-none z-0 object-contain"
-        style={{ ...pos, ...sizeStyle }}
-      />
+    handleResize(); // inisialisasi
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    const now = Date.now();
+
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      const age = now - parsed.timestamp;
+
+      if (age < 1000 * 60 * 60) {
+        setIcons(parsed.icons);
+        return;
+      }
+    }
+
+    // Generate baru
+    const usedPositions: { top: string; left: string }[] = [];
+    const generatedIcons: IconData[] = [];
+
+    for (let i = 0; i < total; i++) {
+      const pos = generateUniquePosition(usedPositions);
+      usedPositions.push(pos);
+    }
+
+    for (let i = 0; i < total; i++) {
+      const pos = generateUniquePosition(usedPositions);
+      usedPositions.push(pos);
+    }
+
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ timestamp: now, icons: generatedIcons })
     );
-  });
+    setIcons(generatedIcons);
+  }, [total]);
 
   return (
     <>
-      {xIcons}
-      {oIcons}
+      {icons.map((icon, idx) => {
+        const { width, height } = getRandomSizeStyle(breakpoint);
+
+        return (
+          <motion.img
+            key={idx}
+            src={icon.type === "X" ? xImage : oImage}
+            alt={icon.type}
+            className="absolute opacity-30 pointer-events-none z-0 object-contain"
+            style={{
+              top: icon.top,
+              left: icon.left,
+              width,
+              height,
+            }}
+            variants={iconVariants}
+            initial="hidden"
+            animate="visible"
+          />
+        );
+      })}
     </>
   );
 };

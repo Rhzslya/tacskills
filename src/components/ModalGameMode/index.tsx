@@ -1,4 +1,12 @@
 import React, { useState } from "react";
+import { motion } from "framer-motion";
+import {
+  modalBackdropVariants,
+  modalHeaderContainerVariants,
+  modalHeaderItemVariants,
+  modeButtonsContainerVariants,
+  modeButtonVariants,
+} from "../../lib/framer-motion";
 
 type DifficultyLevel = "easy" | "medium" | "hard";
 type ModeType = "1p-easy" | "1p-medium" | "1p-hard" | "2p";
@@ -15,21 +23,41 @@ const ModalGameMode: React.FC<Props> = ({ handleModalClose, onSelectMode }) => {
 
   return (
     <>
-      <div
+      <motion.div
         className="fixed inset-0 bg-black bg-opacity-50 z-20"
         onClick={handleModalClose}
+        variants={modalBackdropVariants}
+        initial="hidden"
+        animate="visible"
       />
 
-      <div className="fixed z-30 bg-white rounded-lg shadow-lg p-6 w-[90%] max-w-md mx-auto top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">
+      <motion.div
+        className="fixed z-30 bg-white rounded-lg shadow-lg p-6 w-[90%] max-w-md mx-auto"
+        style={{ top: "50%", left: "50%", position: "fixed" }}
+        initial={{ opacity: 0, scale: 0.9, x: "-50%", y: "-50%" }}
+        animate={{ opacity: 1, scale: 1, x: "-50%", y: "-50%" }}
+        exit={{ opacity: 0, scale: 0.9, x: "-50%", y: "-50%" }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+      >
+        <motion.div
+          className="flex justify-between items-center mb-4"
+          variants={modalHeaderContainerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <motion.h2
+            className="text-base lg:text-xl font-bold"
+            variants={modalHeaderItemVariants}
+          >
             {step === "mode"
               ? "Select Game Mode"
               : step === "grid"
               ? "Select Grid Size"
               : "Select Difficulty"}
-          </h2>
-          <button
+          </motion.h2>
+
+          <motion.button
+            variants={modalHeaderItemVariants}
             onClick={() => {
               if (step === "difficulty") {
                 setStep("grid");
@@ -43,40 +71,54 @@ const ModalGameMode: React.FC<Props> = ({ handleModalClose, onSelectMode }) => {
             className="text-gray-500 hover:text-gray-800 text-lg font-bold"
           >
             ×
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
 
         {step === "mode" && (
-          <div className="space-y-4">
-            <button
-              className="w-full bg-[#b8cfce] text-white font-semibold px-4 py-2 rounded-md hover:bg-[#7F8CAA] duration-300"
+          <motion.div
+            className="space-y-4"
+            variants={modeButtonsContainerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            <motion.button
+              className="w-full bg-[#b8cfce] text-white text-sm md:text-base font-semibold px-4 py-2 rounded-md hover:bg-[#7F8CAA] duration-300"
+              variants={modeButtonVariants}
               onClick={() => {
                 setTempMode("1p");
                 setStep("grid");
               }}
             >
               1 Player
-            </button>
-            <button
-              className="w-full bg-[#b8cfce] text-white font-semibold px-4 py-2 rounded-md hover:bg-[#7F8CAA] duration-300"
+            </motion.button>
+
+            <motion.button
+              className="w-full bg-[#b8cfce] text-white text-sm md:text-base font-semibold px-4 py-2 rounded-md hover:bg-[#7F8CAA] duration-300"
+              variants={modeButtonVariants}
               onClick={() => {
                 setTempMode("2p");
                 setStep("grid");
               }}
             >
               2 Player
-            </button>
-          </div>
+            </motion.button>
+          </motion.div>
         )}
 
         {step === "grid" && (
-          <div className="grid grid-cols-2 gap-3">
+          <motion.div
+            className="grid grid-cols-2 gap-3"
+            variants={modeButtonsContainerVariants}
+            initial="hidden"
+            animate="visible"
+          >
             {[3, 4, 5, 6].map((size) => (
-              <button
+              <motion.button
                 key={size}
-                className={`bg-gray-300 text-gray-800 font-semibold px-4 py-2 rounded-md hover:bg-gray-400 ${
-                  selectedGrid === size ? "bg-[#7F8CAA] text-white" : ""
+                className={`bg-gray-300 text-gray-800 text-sm md:text-base font-semibold px-4 py-2 rounded-md hover:bg-gray-400 ${
+                  selectedGrid === size ? "bg-[#7F8CAA] text-white " : ""
                 }`}
+                variants={modeButtonVariants}
                 onClick={() => {
                   setSelectedGrid(size);
                   if (tempMode === "1p") {
@@ -88,37 +130,43 @@ const ModalGameMode: React.FC<Props> = ({ handleModalClose, onSelectMode }) => {
                 }}
               >
                 {size} x {size}
-              </button>
+              </motion.button>
             ))}
-          </div>
+          </motion.div>
         )}
 
         {step === "difficulty" && tempMode === "1p" && (
-          <div className="space-y-4">
+          <motion.div
+            className="space-y-4"
+            variants={modeButtonsContainerVariants}
+            initial="hidden"
+            animate="visible"
+          >
             {(["easy", "medium", "hard"] as DifficultyLevel[]).map((level) => {
               const mode: ModeType = `1p-${level}`;
               return (
-                <button
+                <motion.button
                   key={level}
-                  className={`w-full ${
+                  className={`w-full text-sm md:text-base ${
                     level === "easy"
-                      ? "bg-green-500 hover:bg-green-600"
+                      ? "bg-sky-700 hover:bg-sky-800"
                       : level === "medium"
-                      ? "bg-yellow-500 hover:bg-yellow-600"
-                      : "bg-red-500 hover:bg-red-600"
+                      ? "bg-indigo-700 hover:bg-indigo-800"
+                      : "bg-slate-700 hover:bg-slate-800"
                   } text-white font-semibold px-4 py-2 rounded-md`}
+                  variants={modeButtonVariants}
                   onClick={() => {
                     onSelectMode(mode, selectedGrid);
                     handleModalClose();
                   }}
                 >
                   {level.charAt(0).toUpperCase() + level.slice(1)}
-                </button>
+                </motion.button>
               );
             })}
-          </div>
+          </motion.div>
         )}
-      </div>
+      </motion.div>
     </>
   );
 };
