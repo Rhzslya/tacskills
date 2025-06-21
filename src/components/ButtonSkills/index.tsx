@@ -31,11 +31,11 @@ const ButtonSkills = ({
     playerSymbol === "O" ? "Convert X to O" : "Convert O to X";
 
   return (
-    <div className="flex gap-4 items-center mt-2 z-10">
+    <div className="flex flex-col md:flex-row gap-2 md:gap-4 items-center mt-2 z-10 text-nowrap">
       <button
         disabled={isDisabled(hasUsedDeletedSkill) || !hasOpponentSymbol}
         onClick={() => setSelectedSkill("delete")}
-        className={`text-xs font-semibold px-2 py-1 rounded border transition ${
+        className={`w-full md:w-fill text-xs font-semibold px-2 py-1 rounded border transition ${
           isDisabled(hasUsedDeletedSkill) || !hasOpponentSymbol
             ? "text-gray-400 border-gray-300 cursor-not-allowed"
             : selectedSkill === "delete"
@@ -55,7 +55,7 @@ const ButtonSkills = ({
       <button
         disabled={isDisabled(hasUsedConvertSkill) || !hasOpponentSymbol}
         onClick={() => setSelectedSkill("convert")}
-        className={`text-xs font-semibold px-2 py-1 rounded border transition ${
+        className={`w-full md:w-fill text-xs font-semibold px-2 py-1 rounded border transition text-nowrap ${
           isDisabled(hasUsedConvertSkill) || !hasOpponentSymbol
             ? "text-gray-400 border-gray-300 cursor-not-allowed"
             : selectedSkill === "convert"
@@ -74,7 +74,7 @@ const ButtonSkills = ({
       <button
         disabled={isDisabled(hasUsedSweepSkill) || !canUseSweepSkill}
         onClick={() => setSelectedSkill("sweep")}
-        className={`text-xs font-semibold px-2 py-1 rounded border transition ${
+        className={`w-full md:w-fill text-xs font-semibold px-2 py-1 rounded border transition text-nowrap ${
           isDisabled(hasUsedSweepSkill) || !canUseSweepSkill
             ? "text-gray-400 border-gray-300 cursor-not-allowed"
             : selectedSkill === "sweep"

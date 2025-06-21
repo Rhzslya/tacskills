@@ -17,7 +17,6 @@ const Square = ({
   selectedSkill,
   playerSymbol,
   sweepTargetEnemyIndex,
-  grid,
 }: SquareProps) => {
   const opponentSymbol = playerSymbol === "X" ? "O" : "X";
   const isTargetForDelete =
@@ -56,19 +55,11 @@ const Square = ({
   const renderContent = () => {
     if (value === "X")
       return (
-        <img
-          src={xImg}
-          alt="X"
-          className="w-6 h-6 md:w-8 md:h-8 lg:w-10 lg:h-10"
-        />
+        <img src={xImg} alt="X" className="w-full h-full object-contain " />
       );
     if (value === "O")
       return (
-        <img
-          src={oImg}
-          alt="O"
-          className="w-6 h-6 md:w-8 md:h-8 lg:w-10 lg:h-10"
-        />
+        <img src={oImg} alt="O" className="w-full h-full object-contain " />
       );
     return null;
   };
@@ -81,21 +72,11 @@ const Square = ({
     return "";
   };
 
-  const getSize = () => {
-    if (grid <= 3) return 56; // px (14 * 4)
-    if (grid <= 5) return 48; // px (12 * 4)
-    return 40; // default for larger grids
-  };
-
   return (
     <button
-      className={`bg-white border border-gray-300 flex items-center justify-center transition-colors duration-200 ${getHoverClass()} ${getExtraClass()}`}
+      className={`w-full h-full p-1 aspect-square bg-white border border-gray-300 flex items-center justify-center transition-colors duration-200 ${getHoverClass()} ${getExtraClass()}`}
       onClick={onClick}
       title={getTitle()}
-      style={{
-        width: getSize(),
-        height: getSize(),
-      }}
     >
       {renderContent()}
     </button>

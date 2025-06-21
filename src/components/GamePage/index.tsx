@@ -2,6 +2,8 @@ import { useState } from "react";
 import { capitalizeFirst } from "../../utils/Capitalize";
 import Board from "../Board";
 import XOBackgroundIcons from "../XOBackgrounds";
+import { motion } from "framer-motion";
+import { fadeIn } from "../../lib/framer-motion";
 
 const GamePage = () => {
   const searchParams = new URLSearchParams(location.search);
@@ -21,12 +23,17 @@ const GamePage = () => {
   const [playerMode, difficulty] = mode?.split("-") ?? [];
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center flex-col gap-4 text-center bg-[#eaefef] text-white">
-      <h1 className="text-4xl font-bold z-10 text-[#7F8CAA]">
+    <div className="min-h-screen mx-3 md:mx-4 relative flex items-center justify-center flex-col gap-2 md:gap-4 text-center bg-[#eaefef] text-white">
+      <motion.h1
+        className="text-[#7F8CAA] font-bold text-2xl sm:text-3xl md:text-4xl"
+        initial="hidden"
+        animate="visible"
+        variants={fadeIn(0.6)}
+      >
         {playerMode === "1p"
           ? `1 Player (${capitalizeFirst(difficulty) || "normal"})`
           : "2 Player"}
-      </h1>
+      </motion.h1>
       <Board
         mode={playerMode as "1p" | "2p"}
         difficulty={difficulty as "easy" | "medium" | "hard" | undefined}

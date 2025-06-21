@@ -286,8 +286,14 @@ const Board = ({
       ? status
       : null;
 
+  const getMaxWidthClass = () => {
+    if (grid >= 6) return "max-w-[400px] lg:max-w-[500px]";
+    if (grid >= 4) return "max-w-[300px] md:max-w-[400px] lg:max-w-[500px]";
+    return "max-w-[200px] md:max-w-[250px] lg:max-w-[300px]";
+  };
+
   return (
-    <div className="relative flex flex-col items-center mt-4 space-y-4 z-10">
+    <div className="relative w-full flex flex-col items-center mt-4 space-y-4 z-10">
       {shouldShowResultModal && (
         <BaseModal>
           <motion.div
@@ -351,7 +357,7 @@ const Board = ({
       )}
 
       <div
-        className="grid gap-1"
+        className={`grid gap-1 w-full mx-auto ${getMaxWidthClass()}`}
         style={{ gridTemplateColumns: `repeat(${grid}, minmax(0, 1fr))` }}
       >
         {squares.map((value, i) => (
