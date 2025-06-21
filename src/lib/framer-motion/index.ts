@@ -165,3 +165,68 @@ export const modeButtonsContainerVariants: Variants = {
     },
   },
 };
+
+export const logoVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    scale: 0.8,
+    y: -20,
+  },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: "easeOut",
+    },
+  },
+};
+
+export const squareVariant: Variants = {
+  hidden: {
+    opacity: 0,
+    scale: 0.8,
+  },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      type: "spring",
+      stiffness: 300,
+      damping: 20,
+    },
+  },
+};
+
+export const buttonSkillVariant: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 10,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring",
+      stiffness: 300,
+      damping: 18,
+    },
+  },
+};
+
+export const turnStatusVariant: Variants = {
+  hidden: {
+    opacity: 0,
+    y: -8,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring",
+      stiffness: 200,
+      damping: 18,
+    },
+  },
+};

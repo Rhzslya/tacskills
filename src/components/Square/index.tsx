@@ -1,5 +1,7 @@
 import xImg from "../../assets/x.webp";
 import oImg from "../../assets/o.webp";
+import { motion } from "framer-motion";
+import { squareVariant } from "../../lib/framer-motion";
 
 interface SquareProps {
   value: string | null;
@@ -73,13 +75,16 @@ const Square = ({
   };
 
   return (
-    <button
+    <motion.button
       className={`w-full h-full p-1 aspect-square bg-white border border-gray-300 flex items-center justify-center transition-colors duration-200 ${getHoverClass()} ${getExtraClass()}`}
       onClick={onClick}
       title={getTitle()}
+      variants={squareVariant}
+      initial="hidden"
+      animate="visible"
     >
       {renderContent()}
-    </button>
+    </motion.button>
   );
 };
 

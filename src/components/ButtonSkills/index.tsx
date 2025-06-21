@@ -1,3 +1,6 @@
+import { motion } from "framer-motion";
+import { buttonSkillVariant } from "../../lib/framer-motion";
+
 interface ButtonSkillsProps {
   hasUsedDeletedSkill: boolean;
   hasUsedConvertSkill: boolean;
@@ -31,11 +34,25 @@ const ButtonSkills = ({
     playerSymbol === "O" ? "Convert X to O" : "Convert O to X";
 
   return (
-    <div className="flex flex-col md:flex-row gap-2 md:gap-4 items-center mt-2 z-10 text-nowrap">
-      <button
+    <motion.div
+      className="flex flex-col md:flex-row gap-2 md:gap-4 items-center mt-2 z-10 text-nowrap"
+      initial="hidden"
+      animate="visible"
+      variants={{
+        hidden: {},
+        visible: {
+          transition: {
+            staggerChildren: 0.1,
+          },
+        },
+      }}
+    >
+      {/* Delete Skill */}
+      <motion.button
+        variants={buttonSkillVariant}
         disabled={isDisabled(hasUsedDeletedSkill) || !hasOpponentSymbol}
         onClick={() => setSelectedSkill("delete")}
-        className={`w-full md:w-fill text-xs font-semibold px-2 py-1 rounded border transition ${
+        className={`w-full md:w-fit text-xs font-semibold px-2 py-1 rounded border transition ${
           isDisabled(hasUsedDeletedSkill) || !hasOpponentSymbol
             ? "text-gray-400 border-gray-300 cursor-not-allowed"
             : selectedSkill === "delete"
@@ -49,13 +66,14 @@ const ButtonSkills = ({
           : !hasOpponentSymbol
           ? "(no target)"
           : ""}
-      </button>
+      </motion.button>
 
       {/* Convert Skill */}
-      <button
+      <motion.button
+        variants={buttonSkillVariant}
         disabled={isDisabled(hasUsedConvertSkill) || !hasOpponentSymbol}
         onClick={() => setSelectedSkill("convert")}
-        className={`w-full md:w-fill text-xs font-semibold px-2 py-1 rounded border transition text-nowrap ${
+        className={`w-full md:w-fit text-xs font-semibold px-2 py-1 rounded border transition ${
           isDisabled(hasUsedConvertSkill) || !hasOpponentSymbol
             ? "text-gray-400 border-gray-300 cursor-not-allowed"
             : selectedSkill === "convert"
@@ -69,12 +87,14 @@ const ButtonSkills = ({
           : !hasOpponentSymbol
           ? "(no target)"
           : ""}
-      </button>
+      </motion.button>
 
-      <button
+      {/* Sweep Skill */}
+      <motion.button
+        variants={buttonSkillVariant}
         disabled={isDisabled(hasUsedSweepSkill) || !canUseSweepSkill}
         onClick={() => setSelectedSkill("sweep")}
-        className={`w-full md:w-fill text-xs font-semibold px-2 py-1 rounded border transition text-nowrap ${
+        className={`w-full md:w-fit text-xs font-semibold px-2 py-1 rounded border transition ${
           isDisabled(hasUsedSweepSkill) || !canUseSweepSkill
             ? "text-gray-400 border-gray-300 cursor-not-allowed"
             : selectedSkill === "sweep"
@@ -84,8 +104,8 @@ const ButtonSkills = ({
       >
         Sweep Mark{" "}
         {hasUsedSweepSkill ? "(used)" : !canUseSweepSkill ? "(no target)" : ""}
-      </button>
-    </div>
+      </motion.button>
+    </motion.div>
   );
 };
 

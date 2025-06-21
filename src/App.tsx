@@ -7,8 +7,10 @@ import {
   backgroundVariants,
   fadeIn,
   fadeInUp,
+  logoVariants,
   popIn,
 } from "./lib/framer-motion";
+import logo from "./assets/logo.webp";
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -34,6 +36,15 @@ function App() {
         animate="visible"
       />
       <XOBackgroundIcons total={20} />
+
+      <motion.div
+        className="max-w-[200px] z-10"
+        variants={logoVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <img src={logo} alt="X" className="w-full h-full object-contain" />
+      </motion.div>
 
       <motion.h1
         className="title-main font-bold text-center relative z-10 text-nowrap"

@@ -3,7 +3,8 @@ import { capitalizeFirst } from "../../utils/Capitalize";
 import Board from "../Board";
 import XOBackgroundIcons from "../XOBackgrounds";
 import { motion } from "framer-motion";
-import { fadeIn } from "../../lib/framer-motion";
+import { fadeIn, popIn } from "../../lib/framer-motion";
+import { Home } from "lucide-react";
 
 const GamePage = () => {
   const searchParams = new URLSearchParams(location.search);
@@ -56,6 +57,20 @@ const GamePage = () => {
       />
 
       <XOBackgroundIcons total={20} />
+
+      <motion.div
+        className="absolute top-4 right-4 group z-10"
+        variants={popIn}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.button
+          className="bg-[#b8cfce] p-2 text-white font-semibold rounded-sm group-hover:bg-[#7F8CAA] group-hover:text-[#333446] duration-300 flex items-center justify-center"
+          title="Home"
+        >
+          <Home className="w-5 h-5" />
+        </motion.button>
+      </motion.div>
     </div>
   );
 };

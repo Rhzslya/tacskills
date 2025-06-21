@@ -8,6 +8,7 @@ import BaseModal from "../BaseModal";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { getRandomMessage, type GameStatus } from "../../utils/RandomMessages";
+import { turnStatusVariant } from "../../lib/framer-motion";
 
 interface BoardProps {
   mode: "1p" | "2p";
@@ -407,7 +408,12 @@ const Board = ({
         </div>
       )}
 
-      <div className="mt-2 text-sm font-medium text-gray-700">
+      <motion.div
+        className="mt-2 text-sm font-medium text-gray-700"
+        variants={turnStatusVariant}
+        initial="hidden"
+        animate="visible"
+      >
         {mode === "1p" ? (
           isXNext ? (
             <span className="text-blue-600">🔵 Your Turn (X)</span>
@@ -419,7 +425,7 @@ const Board = ({
         ) : (
           <span className="text-pink-600">🔴 Player O Turn</span>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 };
