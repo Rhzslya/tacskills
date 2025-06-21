@@ -4,8 +4,9 @@ interface ButtonSkillsProps {
   hasUsedSweepSkill: boolean;
   selectedSkill: "delete" | "convert" | "sweep" | null;
   setSelectedSkill: (value: "delete" | "convert" | "sweep" | null) => void;
-  playerSymbol: "X" | "O"; // siapa pemilik tombol ini
-  currentPlayer: "X" | "O"; // siapa yang sedang bermain
+  playerSymbol: "X" | "O";
+  currentPlayer: "X" | "O";
+  squares: (string | null)[];
 }
 
 const ButtonSkills = ({
@@ -16,8 +17,14 @@ const ButtonSkills = ({
   setSelectedSkill,
   playerSymbol,
   currentPlayer,
+  squares,
 }: ButtonSkillsProps) => {
   const isDisabled = (used: boolean) => used || currentPlayer !== playerSymbol;
+  const opponentSymbol = playerSymbol === "X" ? "O" : "X";
+  const hasOpponentSymbol = squares.includes(opponentSymbol);
+  const hasPlayerSymbol = squares.includes(playerSymbol);
+
+  const canUseSweepSkill = hasPlayerSymbol && hasOpponentSymbol;
 
   const deleteLabel = playerSymbol === "O" ? "Delete X" : "Delete O";
   const convertLabel =
@@ -25,51 +32,58 @@ const ButtonSkills = ({
 
   return (
     <div className="flex gap-4 items-center mt-2 z-10">
-      <span className="text-sm font-medium text-[#7F8CAA]">Skills:</span>
-
-      {/* Delete Skill */}
       <button
-        disabled={isDisabled(hasUsedDeletedSkill)}
+        disabled={isDisabled(hasUsedDeletedSkill) || !hasOpponentSymbol}
         onClick={() => setSelectedSkill("delete")}
         className={`text-xs font-semibold px-2 py-1 rounded border transition ${
-          isDisabled(hasUsedDeletedSkill)
+          isDisabled(hasUsedDeletedSkill) || !hasOpponentSymbol
             ? "text-gray-400 border-gray-300 cursor-not-allowed"
             : selectedSkill === "delete"
             ? "text-white bg-red-500 border-red-600"
             : "text-red-500 border-red-300"
         }`}
       >
-        {deleteLabel} {hasUsedDeletedSkill && "(used)"}
+        {deleteLabel}{" "}
+        {hasUsedDeletedSkill
+          ? "(used)"
+          : !hasOpponentSymbol
+          ? "(no target)"
+          : ""}
       </button>
 
       {/* Convert Skill */}
       <button
-        disabled={isDisabled(hasUsedConvertSkill)}
+        disabled={isDisabled(hasUsedConvertSkill) || !hasOpponentSymbol}
         onClick={() => setSelectedSkill("convert")}
         className={`text-xs font-semibold px-2 py-1 rounded border transition ${
-          isDisabled(hasUsedConvertSkill)
+          isDisabled(hasUsedConvertSkill) || !hasOpponentSymbol
             ? "text-gray-400 border-gray-300 cursor-not-allowed"
             : selectedSkill === "convert"
             ? "text-white bg-blue-500 border-blue-600"
             : "text-blue-500 border-blue-300"
         }`}
       >
-        {convertLabel} {hasUsedConvertSkill && "(used)"}
+        {convertLabel}{" "}
+        {hasUsedConvertSkill
+          ? "(used)"
+          : !hasOpponentSymbol
+          ? "(no target)"
+          : ""}
       </button>
 
-      {/* Sweep Skill */}
       <button
-        disabled={isDisabled(hasUsedSweepSkill)}
+        disabled={isDisabled(hasUsedSweepSkill) || !canUseSweepSkill}
         onClick={() => setSelectedSkill("sweep")}
         className={`text-xs font-semibold px-2 py-1 rounded border transition ${
-          isDisabled(hasUsedSweepSkill)
+          isDisabled(hasUsedSweepSkill) || !canUseSweepSkill
             ? "text-gray-400 border-gray-300 cursor-not-allowed"
             : selectedSkill === "sweep"
             ? "text-white bg-green-500 border-green-600"
             : "text-green-500 border-green-300"
         }`}
       >
-        Sweep Mark {hasUsedSweepSkill && "(used)"}
+        Sweep Mark{" "}
+        {hasUsedSweepSkill ? "(used)" : !canUseSweepSkill ? "(no target)" : ""}
       </button>
     </div>
   );

@@ -48,7 +48,7 @@ const GamePage = () => {
         playerMode={playerMode}
       />
 
-      <XOBackgroundIcons total={10} />
+      <XOBackgroundIcons total={20} />
     </div>
   );
 };

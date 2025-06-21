@@ -33,7 +33,7 @@ function App() {
         initial="hidden"
         animate="visible"
       />
-      <XOBackgroundIcons total={10} />
+      <XOBackgroundIcons total={20} />
 
       <motion.h1
         className="title-main font-bold text-center relative z-10 text-nowrap"

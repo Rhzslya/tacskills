@@ -99,24 +99,24 @@ const XOBackgroundIcons: React.FC<XOBackgroundIconsProps> = ({
       const parsed = JSON.parse(saved);
       const age = now - parsed.timestamp;
 
-      if (age < 1000 * 60 * 60) {
+      if (age < 1000 * 5) {
         setIcons(parsed.icons);
         return;
       }
     }
 
-    // Generate baru
     const usedPositions: { top: string; left: string }[] = [];
     const generatedIcons: IconData[] = [];
 
     for (let i = 0; i < total; i++) {
       const pos = generateUniquePosition(usedPositions);
       usedPositions.push(pos);
-    }
 
-    for (let i = 0; i < total; i++) {
-      const pos = generateUniquePosition(usedPositions);
-      usedPositions.push(pos);
+      generatedIcons.push({
+        type: Math.random() > 0.5 ? "X" : "O",
+        top: pos.top,
+        left: pos.left,
+      });
     }
 
     localStorage.setItem(

@@ -4,6 +4,10 @@ import Square from "../Square";
 import findBestMove from "../../utils/FindBestMove";
 import findDangerousMove from "../../utils/FindDangerousMove";
 import ButtonSkills from "../ButtonSkills";
+import BaseModal from "../BaseModal";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { getRandomMessage, type GameStatus } from "../../utils/RandomMessages";
 
 interface BoardProps {
   mode: "1p" | "2p";
@@ -54,8 +58,9 @@ const Board = ({
     number | null
   >(null);
   const playerSymbol = mode === "1p" ? "X" : isXNext ? "X" : "O";
-
   const winner = calculateWinner(squares, grid);
+  const shouldShowResultModal = !!winner || squares.every(Boolean);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setSquares(Array(grid * grid).fill(null));
@@ -83,6 +88,10 @@ const Board = ({
     setIsXNext(!isXNext);
   }
 
+  const handleExit = () => {
+    navigate("/");
+  };
+
   function handleUseDeleteSkill(index: number) {
     const nextSquares = [...squares];
     nextSquares[index] = null;
@@ -97,7 +106,7 @@ const Board = ({
 
   function handleUseConvertSkill(index: number) {
     const nextSquares = [...squares];
-    nextSquares[index] = isXNext ? "X" : "O"; // <- sebelumnya hardcoded "X"
+    nextSquares[index] = isXNext ? "X" : "O";
     setSquares(nextSquares);
     if (isXNext) {
       setHasUsedConvertSkill(true);
@@ -252,9 +261,14 @@ const Board = ({
     setPlayerOUsedConvertSkill(false);
     setPlayerOUsedSweepSkill(false);
   }
-
   const status = winner
-    ? `Winner: ${winner}`
+    ? mode === "1p"
+      ? winner === "X"
+        ? "You Win!"
+        : "You Lose!"
+      : winner === "X"
+      ? "Player X Win"
+      : "Player O Win"
     : squares.every(Boolean)
     ? "Draw!"
     : mode === "1p"
@@ -263,9 +277,79 @@ const Board = ({
       : "Enemy Turn (O)"
     : `Player Turn: ${isXNext ? "X" : "O"}`;
 
+  const gameEndStatus: GameStatus | null =
+    status === "You Win!" ||
+    status === "You Lose!" ||
+    status === "Draw!" ||
+    status === "Player X Win" ||
+    status === "Player O Win"
+      ? status
+      : null;
+
   return (
-    <div className="flex flex-col items-center mt-4 space-y-4 z-10">
-      <span className="text-lg font-bold text-[#7F8CAA]">{status}</span>
+    <div className="relative flex flex-col items-center mt-4 space-y-4 z-10">
+      {shouldShowResultModal && (
+        <BaseModal>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4 }}
+            className="text-center space-y-4"
+          >
+            <p
+              className={`text-2xl font-bold flex justify-center items-center gap-2 ${
+                status.includes("You Win")
+                  ? "text-green-600"
+                  : status.includes("You Lose")
+                  ? "text-red-600"
+                  : status.includes("Draw")
+                  ? "text-yellow-600"
+                  : status.includes("Player X")
+                  ? "text-blue-600"
+                  : status.includes("Player O")
+                  ? "text-pink-600"
+                  : "text-gray-800"
+              }`}
+            >
+              {status === "You Win!"
+                ? "🏆 You Win!"
+                : status === "You Lose!"
+                ? "😢 You Lose!"
+                : status === "Draw!"
+                ? "🤝 Draw!"
+                : status === "Player Turn : X"
+                ? "🔵 Player X's Turn"
+                : status === "Player Turn : O"
+                ? "🔴 Player O's Turn"
+                : status === "Player X Win"
+                ? "🏆 Player X Wins!"
+                : status === "Player O Win"
+                ? "🏆 Player O Wins!"
+                : status}
+            </p>
+
+            <p className="text-sm text-gray-500">
+              {gameEndStatus && getRandomMessage(gameEndStatus)}
+            </p>
+
+            <div className="flex justify-center gap-4 pt-4">
+              <button
+                onClick={handleReset}
+                className="w-full bg-[#b8cfce] hover:bg-[#7F8CAA] text-white font-semibold px-5 py-2 rounded-lg transition duration-300 shadow-md hover:shadow-lg"
+              >
+                Play Again
+              </button>
+              <button
+                onClick={handleExit}
+                className="w-full bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold px-5 py-2 rounded-lg transition duration-300 shadow-md hover:shadow-lg"
+              >
+                Exit
+              </button>
+            </div>
+          </motion.div>
+        </BaseModal>
+      )}
+
       <div
         className="grid gap-1"
         style={{ gridTemplateColumns: `repeat(${grid}, minmax(0, 1fr))` }}
@@ -274,6 +358,7 @@ const Board = ({
           <Square
             key={i}
             value={value}
+            index={i}
             onClick={() => {
               if (mode === "1p" && !isXNext) return;
 
@@ -281,6 +366,10 @@ const Board = ({
 
               handleClick(i);
             }}
+            selectedSkill={selectedSkill}
+            playerSymbol={playerSymbol}
+            sweepTargetEnemyIndex={sweepTargetEnemyIndex}
+            grid={grid}
           />
         ))}
       </div>
@@ -300,23 +389,10 @@ const Board = ({
           setSelectedSkill={setSelectedSkill}
           playerSymbol={playerSymbol}
           currentPlayer={isXNext ? "X" : "O"}
+          squares={squares}
         />
       ) : null}
 
-      <div
-        className={`button-play-again mt-6 z-10 group transition-opacity ${
-          winner || squares.every(Boolean)
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
-        }`}
-      >
-        <button
-          onClick={handleReset}
-          className="bg-[#b8cfce] text-white font-semibold px-4 py-2 rounded-md group-hover:bg-[#7F8CAA] group-hover:text-[#333446] duration-300"
-        >
-          Play Again
-        </button>
-      </div>
       {selectedSkill === "sweep" && (
         <div className="text-sm text-[#0a0909] italic mt-2">
           {sweepTargetEnemyIndex === null
@@ -324,6 +400,20 @@ const Board = ({
             : "Pick one of your marks to swap with enemy mark."}
         </div>
       )}
+
+      <div className="mt-2 text-sm font-medium text-gray-700">
+        {mode === "1p" ? (
+          isXNext ? (
+            <span className="text-blue-600">🔵 Your Turn (X)</span>
+          ) : (
+            <span className="text-red-600">🔴 Enemy Turn (O)</span>
+          )
+        ) : isXNext ? (
+          <span className="text-blue-600">🔵 Player X Turn</span>
+        ) : (
+          <span className="text-pink-600">🔴 Player O Turn</span>
+        )}
+      </div>
     </div>
   );
 };
