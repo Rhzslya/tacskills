@@ -27,8 +27,6 @@
   - **Convert**: ubah simbol lawan jadi milikmu
   - **Sweep**: tukar simbol lawan dengan simbolmu
 - 🎨 **Grid Variatif**: dukungan untuk 3x3, 4x4, 5x5, dan 6x6
-- 🌈 **Animasi Dinamis**: background dengan efek *beam collision*
-- 💥 **Visual Feedback**: efek ledakan saat beam mengenai batas
 - 🎯 **AI Bot** dengan logika langkah berbasis heuristic
 
 ---
