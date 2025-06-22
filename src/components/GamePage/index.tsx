@@ -5,6 +5,9 @@ import XOBackgroundIcons from "../XOBackgrounds";
 import { motion } from "framer-motion";
 import { fadeIn, popIn } from "../../lib/framer-motion";
 import { Home } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { BackgroundBeamsWithCollision } from "../../utils/BackgroundBeams";
+import { cn } from "../../lib/utils";
 
 const GamePage = () => {
   const searchParams = new URLSearchParams(location.search);
@@ -23,10 +26,24 @@ const GamePage = () => {
 
   const [playerMode, difficulty] = mode?.split("-") ?? [];
 
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/`);
+  };
+
   return (
-    <div className="min-h-screen mx-3 md:mx-4 relative flex items-center justify-center flex-col gap-2 md:gap-4 text-center bg-[#eaefef] text-white">
+    <BackgroundBeamsWithCollision className="min-h-screen w-full overflow-x-hidden overflow-y-hidden relative flex items-center justify-center flex-col gap-2 md:gap-4 text-center bg-[#eaefef] text-white">
+      <div
+        className={cn(
+          "absolute inset-0",
+          "[background-size:20px_20px]",
+          "[background-image:radial-gradient(#d4d4d4_1px,transparent_1px)]",
+          "dark:[background-image:radial-gradient(#404040_1px,transparent_1px)]"
+        )}
+      />
       <motion.h1
-        className="text-[#7F8CAA] font-bold text-2xl sm:text-3xl md:text-4xl"
+        className="text-[#7F8CAA] font-bold text-2xl sm:text-3xl md:text-4xl z-10"
         initial="hidden"
         animate="visible"
         variants={fadeIn(0.6)}
@@ -67,11 +84,12 @@ const GamePage = () => {
         <motion.button
           className="bg-[#b8cfce] p-2 text-white font-semibold rounded-sm group-hover:bg-[#7F8CAA] group-hover:text-[#333446] duration-300 flex items-center justify-center"
           title="Home"
+          onClick={handleClick}
         >
-          <Home className="w-5 h-5" />
+          <Home className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5" />
         </motion.button>
       </motion.div>
-    </div>
+    </BackgroundBeamsWithCollision>
   );
 };
 

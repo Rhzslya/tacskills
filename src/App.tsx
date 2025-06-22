@@ -11,6 +11,7 @@ import {
   popIn,
 } from "./lib/framer-motion";
 import logo from "./assets/logo.webp";
+import { ColourfulText } from "./utils/ColorfulText";
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -38,7 +39,7 @@ function App() {
       <XOBackgroundIcons total={20} />
 
       <motion.div
-        className="max-w-[200px] z-10"
+        className="max-w-[150px] lg:max-w-[200px] z-10"
         variants={logoVariants}
         initial="hidden"
         animate="visible"
@@ -53,7 +54,7 @@ function App() {
         animate="visible"
         variants={fadeIn(0.6)}
       >
-        Tic Tac Toe
+        Tic Tac Toe{" "}
       </motion.h1>
 
       <motion.div
@@ -65,7 +66,7 @@ function App() {
           variants={fadeInUp}
           style={{ fontSize: "clamp(1rem, 2vw, 18px)" }}
         >
-          Classic rules, modern skills. Tic Tac Toe has evolved.
+          <ColourfulText text="Think fast, act smart. Delete, Convert, or Sweep your way to victory." />
         </motion.p>
       </motion.div>
 
