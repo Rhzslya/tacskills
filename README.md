@@ -1,4 +1,4 @@
-# 🎮 TacSkills
+y# 🎮 TacSkills
 
 **TacSkills** adalah game Tic Tac Toe interaktif dengan twist modern: pemain dapat menggunakan skill spesial seperti **Delete**, **Convert**, dan **Sweep** untuk mengubah jalannya permainan. Game ini dibangun menggunakan teknologi web modern seperti **React**, **TypeScript**, **Vite**, dan **Framer Motion**, serta dijalankan dengan kecepatan tinggi berkat **Bun**.
 
@@ -73,7 +73,7 @@ src/
 
 ## 💡 Catatan
 
-- Game ini adalah bagian dari proyek sertifikasi **IBM Granite**, dibantu oleh AI language model **Granite 3.3 8B Instruct** melalui platform [Replicate](https://replicate.com/ibm-granite/granite-3.3-8b-instruct).
+- Game ini dibantu oleh AI language model **Granite 3.3 8B Instruct** melalui platform [Replicate](https://replicate.com/ibm-granite/granite-3.3-8b-instruct).
 - Penggunaan AI sangat membantu dalam eksplorasi ide, debugging, dan optimisasi struktur proyek.
 
 ---
