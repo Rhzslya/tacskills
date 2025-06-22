@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { capitalizeFirst } from "../../utils/Capitalize";
 import Board from "../Board";
 import XOBackgroundIcons from "../XOBackgrounds";
 import { motion } from "framer-motion";
@@ -8,6 +7,8 @@ import { Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BackgroundBeamsWithCollision } from "../../utils/BackgroundBeams";
 import { cn } from "../../lib/utils";
+import { getTitle } from "../../utils/RandomTitle";
+import { parseMode } from "../../utils/Parse";
 
 const GamePage = () => {
   const searchParams = new URLSearchParams(location.search);
@@ -24,7 +25,7 @@ const GamePage = () => {
   const [playerOUsedConvertSkill, setPlayerOUsedConvertSkill] = useState(false);
   const [playerOUsedSweepSkill, setPlayerOUsedSweepSkill] = useState(false);
 
-  const [playerMode, difficulty] = mode?.split("-") ?? [];
+  const { playerMode, difficulty } = parseMode(mode);
 
   const navigate = useNavigate();
 
@@ -48,10 +49,9 @@ const GamePage = () => {
         animate="visible"
         variants={fadeIn(0.6)}
       >
-        {playerMode === "1p"
-          ? `1 Player (${capitalizeFirst(difficulty) || "normal"})`
-          : "2 Player"}
+        {getTitle({ playerMode, difficulty })}
       </motion.h1>
+
       <Board
         mode={playerMode as "1p" | "2p"}
         difficulty={difficulty as "easy" | "medium" | "hard" | undefined}
