@@ -54,7 +54,7 @@ function App() {
         animate="visible"
         variants={fadeIn(0.6)}
       >
-        Tic Tac Toe{" "}
+        TacSkill
       </motion.h1>
 
       <motion.div
@@ -66,7 +66,7 @@ function App() {
           variants={fadeInUp}
           style={{ fontSize: "clamp(1rem, 2vw, 18px)" }}
         >
-          <ColourfulText text="Think fast, act smart. Delete, Convert, or Sweep your way to victory." />
+          <ColourfulText text="Think Tic Tac Toe is simple? Try it with Skills!" />
         </motion.p>
       </motion.div>
 
