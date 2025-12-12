@@ -35,7 +35,7 @@ export default function evaluateBoard(
     }
   }
 
-  // Diagonal /
+  // Diagonal 
   for (let row = 0; row <= grid - 3; row++) {
     for (let col = 0; col <= grid - 3; col++) {
       const start = row * grid + col;
@@ -43,7 +43,7 @@ export default function evaluateBoard(
     }
   }
 
-  // Diagonal \
+  // Diagonal 
   for (let row = 0; row <= grid - 3; row++) {
     for (let col = 2; col < grid; col++) {
       const start = row * grid + col;
